@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Get,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CreateOrderDto } from '../domain/entity/order.entity';
+import CreateOrderService from '../domain/use-case/create-order.service';
 
 @Controller('/orders')
 export default class OrderController {
@@ -16,19 +11,10 @@ export default class OrderController {
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto): string {
-    const total = this.calculateTotalPrice(createOrderDto.orderItems);
+    const createOrderService = new CreateOrderService();
 
-    if (total !== createOrderDto.price) {
-      throw new BadRequestException('Total price does not match');
-    }
+    createOrderService.createOrder(createOrderDto);
 
     return 'Order created';
-  }
-
-  calculateTotalPrice(orderItems) {
-    return orderItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0,
-    );
   }
 }

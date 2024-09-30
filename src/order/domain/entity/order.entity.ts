@@ -17,6 +17,10 @@ import {
 
 @Entity()
 export class Order {
+  static MIN_ORDER_ITEMS = 1;
+  static MAX_ORDER_ITEMS = 5;
+  static MIN_PRICE = 5;
+
   @CreateDateColumn()
   @Expose({ groups: ['group_orders'] })
   createdAt: Date;
@@ -58,24 +62,20 @@ export class Order {
   paidAt: Date | null;
 }
 
-const MIN_ORDER_ITEMS = 1;
-const MAX_ORDER_ITEMS = 5;
-const MIN_PRICE = 10;
-
 export class CreateOrderDto {
   @IsNotEmpty()
   customerName: string;
 
   @IsNotEmpty()
-  @Min(MIN_PRICE)
+  @Min(Order.MIN_PRICE)
   price: number;
 
   @IsNotEmpty()
   shippingAddress: string;
 
   @IsNotEmpty()
-  @ArrayMinSize(MIN_ORDER_ITEMS)
-  @ArrayMaxSize(MAX_ORDER_ITEMS)
+  @ArrayMinSize(Order.MIN_ORDER_ITEMS)
+  @ArrayMaxSize(Order.MAX_ORDER_ITEMS)
   @ValidateNested({ each: true })
   @Type(() => createOrderItemDto)
   orderItems: createOrderItemDto[];

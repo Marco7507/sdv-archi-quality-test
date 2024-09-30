@@ -1,4 +1,4 @@
-import { OrderItem } from '../entity/order-item.entity';
+import { createOrderItemDto, OrderItem } from '../entity/order-item.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,8 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Expose } from 'class-transformer';
-import { ArrayMaxSize, ArrayMinSize, IsNotEmpty, Min } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { ArrayMaxSize, ArrayMinSize, IsNotEmpty, Min, ValidateNested } from 'class-validator';
 
 @Entity()
 export class Order {
@@ -66,5 +66,7 @@ export class CreateOrderDto {
   @IsNotEmpty()
   @ArrayMinSize(1)
   @ArrayMaxSize(5)
-  orderItems: OrderItem[];
+  @ValidateNested({ each: true })
+  @Type(() => createOrderItemDto)
+  orderItems: createOrderItemDto[];
 }

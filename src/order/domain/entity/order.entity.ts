@@ -7,7 +7,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Expose, Type } from 'class-transformer';
-import { ArrayMaxSize, ArrayMinSize, IsNotEmpty, Min, ValidateNested } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsNotEmpty,
+  Min,
+  ValidateNested,
+} from 'class-validator';
 
 @Entity()
 export class Order {
@@ -52,20 +58,24 @@ export class Order {
   paidAt: Date | null;
 }
 
+const MIN_ORDER_ITEMS = 1;
+const MAX_ORDER_ITEMS = 5;
+const MIN_PRICE = 10;
+
 export class CreateOrderDto {
   @IsNotEmpty()
   customerName: string;
 
   @IsNotEmpty()
-  @Min(10)
+  @Min(MIN_PRICE)
   price: number;
 
   @IsNotEmpty()
   shippingAddress: string;
 
   @IsNotEmpty()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(5)
+  @ArrayMinSize(MIN_ORDER_ITEMS)
+  @ArrayMaxSize(MAX_ORDER_ITEMS)
   @ValidateNested({ each: true })
   @Type(() => createOrderItemDto)
   orderItems: createOrderItemDto[];

@@ -55,28 +55,9 @@ export class Order {
 
   @Column()
   @Expose({ groups: ['group_orders'] })
-  status: string;
+  status: 'pending' | 'paid' | 'shipped' | 'delivered';
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
   paidAt: Date | null;
-}
-
-export class CreateOrderDto {
-  @IsNotEmpty()
-  customerName: string;
-
-  @IsNotEmpty()
-  @Min(Order.MIN_PRICE)
-  price: number;
-
-  @IsNotEmpty()
-  shippingAddress: string;
-
-  @IsNotEmpty()
-  @ArrayMinSize(Order.MIN_ORDER_ITEMS)
-  @ArrayMaxSize(Order.MAX_ORDER_ITEMS)
-  @ValidateNested({ each: true })
-  @Type(() => createOrderItemDto)
-  orderItems: createOrderItemDto[];
 }

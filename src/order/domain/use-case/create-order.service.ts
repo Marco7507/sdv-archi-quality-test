@@ -1,5 +1,33 @@
 import { BadRequestException } from '@nestjs/common';
-import { CreateOrderDto, Order } from '../entity/order.entity';
+import { Order } from '../entity/order.entity';
+import { Type } from 'class-transformer';
+import {
+  IsNotEmpty,
+  Min,
+  ArrayMinSize,
+  ArrayMaxSize,
+  ValidateNested,
+} from 'class-validator';
+import { createOrderItemDto } from '../entity/order-item.entity';
+
+export class CreateOrderDto {
+  @IsNotEmpty()
+  customerName: string;
+
+  @IsNotEmpty()
+  @Min(Order.MIN_PRICE)
+  price: number;
+
+  @IsNotEmpty()
+  shippingAddress: string;
+
+  @IsNotEmpty()
+  @ArrayMinSize(Order.MIN_ORDER_ITEMS)
+  @ArrayMaxSize(Order.MAX_ORDER_ITEMS)
+  @ValidateNested({ each: true })
+  @Type(() => createOrderItemDto)
+  orderItems: createOrderItemDto[];
+}
 
 export default class CreateOrderService {
   createOrder(createOrderDto: CreateOrderDto): string {

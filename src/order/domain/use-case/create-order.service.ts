@@ -1,11 +1,12 @@
-import { CreateOrderDto } from '../entity/order.entity';
+import { BadRequestException } from '@nestjs/common';
+import { CreateOrderDto, Order } from '../entity/order.entity';
 
 export default class CreateOrderService {
   createOrder(createOrderDto: CreateOrderDto): string {
     const total = this.calculateTotalPrice(createOrderDto.orderItems);
 
-    if (total !== createOrderDto.price) {
-      throw new Error('Total price does not match');
+    if (total < Order.MIN_PRICE) {
+      throw new BadRequestException('Order price is too low');
     }
 
     return 'Order created';

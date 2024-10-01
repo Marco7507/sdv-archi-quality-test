@@ -3,19 +3,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from '../entity/order.entity';
 import OrderRepository from '../../infrastructure/order.repository';
 
-export class AddShippingAddressDto {
+export class AddInvoiceAddressDto {
   @IsNotEmpty()
   orderId: string;
 
   @IsNotEmpty()
-  shippingAddress: string;
+  invoiceAddress: string;
 }
 
-export default class AddShippingAddressOrderService {
+export default class AddInvoiceAddressOrderService {
   @InjectRepository(Order)
   private readonly orderRepository: OrderRepository;
 
-  async addShippingAddressOrder(addShippingAddressDto: AddShippingAddressDto) {
+  async addInvoiceAddressOrder(addShippingAddressDto: AddInvoiceAddressDto) {
     const order = await this.orderRepository.findById(
       addShippingAddressDto.orderId,
     );
@@ -23,6 +23,6 @@ export default class AddShippingAddressOrderService {
       throw new Error('Order not found');
     }
 
-    order.addShippingAddress(addShippingAddressDto.shippingAddress);
+    order.addInvoiceAddress(addShippingAddressDto.invoiceAddress);
   }
 }

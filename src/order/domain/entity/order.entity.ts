@@ -15,6 +15,7 @@ enum OrderStatus {
   PAID = 'paid',
   SHIPPED = 'shipped',
   DELIVERED = 'delivered',
+  CANCELLED = 'cancelled',
 }
 @Entity()
 export class Order {
@@ -64,6 +65,14 @@ export class Order {
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
   private paidAt: Date | null;
+
+  @Column({ nullable: true })
+  @Expose({ groups: ['group_orders'] })
+  private cancellationReason: string | null;
+
+  @Column()
+  @Expose({ groups: ['group_orders'] })
+  private cancelSetAt: Date | null;
 
   public constructor(createOrderDto: CreateOrderDto) {
     if (
@@ -144,5 +153,39 @@ export class Order {
 
     this.shippingAddress = address;
     this.shippingAddressSetAt = new Date();
+    this.invoiceAddress = address;
+  }
+
+  addInvoiceAddress(invoiceAddress: string) {
+    if (!invoiceAddress) {
+      throw new Error('Address is required');
+    }
+    if (!this.shippingAddress) {
+      throw new Error('Shipping address not set');
+    }
+    if (this.status !== OrderStatus.PENDING) {
+      throw new Error('Order must be pending');
+    }
+    if (!this.price) {
+      throw new Error('Order price not set');
+    }
+
+    this.invoiceAddress = invoiceAddress;
+  }
+
+  cancel(cancellationReason: string) {
+    if (!cancellationReason) {
+      throw new Error('Cancellation reason is required');
+    }
+    if (
+      this.status === OrderStatus.DELIVERED ||
+      this.status === OrderStatus.SHIPPED
+    ) {
+      throw new Error('Cannot cancel delivered or shipped order');
+    }
+
+    this.status = OrderStatus.CANCELLED;
+    this.cancelSetAt = new Date();
+    this.cancellationReason = cancellationReason;
   }
 }

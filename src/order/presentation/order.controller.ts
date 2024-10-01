@@ -12,6 +12,12 @@ import AddShippingAddressOrderService, {
   AddShippingAddressDto,
 } from '../domain/use-case/add-shipping-address-order.service';
 import { Order } from '../domain/entity/order.entity';
+import AddInvoiceAddressOrderService, {
+  AddInvoiceAddressDto,
+} from '../domain/use-case/add-invoice-address-order.service';
+import CancelOrderService, {
+  CancelOrderDto,
+} from '../domain/use-case/cancel-order.service';
 
 @Controller('/orders')
 export default class OrderController {
@@ -47,9 +53,27 @@ export default class OrderController {
     @Body() addShippingAddressDto: AddShippingAddressDto,
   ): Promise<string> {
     const addShippingAddressOrderService = new AddShippingAddressOrderService();
-    await addShippingAddressOrderService.addShipAddressOrder(
+    await addShippingAddressOrderService.addShippingAddressOrder(
       addShippingAddressDto,
     );
     return 'Shipping address added';
+  }
+
+  @Post('/add-invoice-address')
+  async addInvoiceAddress(
+    @Body() addInvoiceAddressDto: AddInvoiceAddressDto,
+  ): Promise<string> {
+    const addInvoiceAddressOrderService = new AddInvoiceAddressOrderService();
+    await addInvoiceAddressOrderService.addInvoiceAddressOrder(
+      addInvoiceAddressDto,
+    );
+    return 'Invoice address added';
+  }
+
+  @Post('/cancel')
+  async cancelOrder(@Body() cancelOrderDto: CancelOrderDto): Promise<string> {
+    const cancelOrderService = new CancelOrderService();
+    await cancelOrderService.cancelOrder(cancelOrderDto);
+    return 'Order cancelled';
   }
 }

@@ -24,5 +24,7 @@ export default class AddInvoiceAddressOrderService {
     }
 
     order.addInvoiceAddress(addShippingAddressDto.invoiceAddress);
+
+    this.orderRepository.save(order);
   }
 }

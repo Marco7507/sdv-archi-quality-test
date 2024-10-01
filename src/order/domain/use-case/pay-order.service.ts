@@ -21,6 +21,8 @@ export default class PayOrderService {
 
     order.pay();
 
+    this.orderRepository.save(order);
+
     return 'Order paid';
   }
 }

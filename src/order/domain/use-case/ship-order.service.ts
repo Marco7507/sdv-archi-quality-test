@@ -20,6 +20,7 @@ export default class ShipOrderService {
     }
 
     order.ship();
+    this.orderRepository.save(order);
 
     return 'Order shipped';
   }

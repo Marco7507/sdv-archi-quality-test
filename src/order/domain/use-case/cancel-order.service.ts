@@ -22,6 +22,7 @@ export default class CancelOrderService {
     }
 
     order.cancel(cancelOrderDto.reason);
+    this.orderRepository.save(order);
 
     return 'Order cancelled';
   }

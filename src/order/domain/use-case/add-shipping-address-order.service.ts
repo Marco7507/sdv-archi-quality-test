@@ -24,5 +24,6 @@ export default class AddShippingAddressOrderService {
     }
 
     order.addShippingAddress(addShippingAddressDto.shippingAddress);
+    this.orderRepository.save(order);
   }
 }

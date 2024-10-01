@@ -22,9 +22,23 @@ export class OrderItem {
 
   @ManyToOne(() => Order, (order) => order.orderItems)
   order: Order;
+
+  constructor(createOrderItemDto: CreateOrderItemDto) {
+    if (
+      !createOrderItemDto.productName ||
+      !createOrderItemDto.quantity ||
+      !createOrderItemDto.price
+    ) {
+      throw new Error('Invalid order item');
+    }
+
+    this.productName = createOrderItemDto.productName;
+    this.quantity = createOrderItemDto.quantity;
+    this.price = createOrderItemDto.price;
+  }
 }
 
-export class createOrderItemDto {
+export class CreateOrderItemDto {
   @IsNotEmpty()
   productName: string;
 

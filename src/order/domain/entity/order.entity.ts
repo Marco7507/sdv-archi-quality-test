@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
+import { CreateOrderDto } from '../use-case/create-order.service';
 
 enum OrderStatus {
   PENDING = 'pending',
@@ -43,7 +44,7 @@ export class Order {
     nullable: true,
   })
   @Expose({ groups: ['group_orders'] })
-  private orderItems: OrderItem[];
+  orderItems: OrderItem[];
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
@@ -62,6 +63,26 @@ export class Order {
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
   private paidAt: Date | null;
+
+  public constructor(createOrderDto: CreateOrderDto) {
+    if (
+      !createOrderDto.customerName ||
+      !createOrderDto.orderItems ||
+      !createOrderDto.price ||
+      createOrderDto.orderItems.length < Order.MIN_ORDER_ITEMS ||
+      createOrderDto.orderItems.length > Order.MAX_ORDER_ITEMS ||
+      createOrderDto.price < Order.MIN_PRICE ||
+      createOrderDto.price > Order.MAX_PRICE
+    ) {
+      throw new Error('Invalid order');
+    }
+    this.customerName = createOrderDto.customerName;
+    this.orderItems = createOrderDto.orderItems.map(
+      (orderItemDto) => new OrderItem(orderItemDto),
+    );
+    this.price = createOrderDto.price;
+    this.status = OrderStatus.PENDING;
+  }
 
   pay() {
     if (this.status !== OrderStatus.PENDING) {

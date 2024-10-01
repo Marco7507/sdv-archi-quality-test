@@ -8,7 +8,7 @@ import {
   ArrayMaxSize,
   ValidateNested,
 } from 'class-validator';
-import { createOrderItemDto } from '../entity/order-item.entity';
+import { CreateOrderItemDto } from '../entity/order-item.entity';
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -25,8 +25,8 @@ export class CreateOrderDto {
   @ArrayMinSize(Order.MIN_ORDER_ITEMS)
   @ArrayMaxSize(Order.MAX_ORDER_ITEMS)
   @ValidateNested({ each: true })
-  @Type(() => createOrderItemDto)
-  orderItems: createOrderItemDto[];
+  @Type(() => CreateOrderItemDto)
+  orderItems: CreateOrderItemDto[];
 }
 
 export default class CreateOrderService {

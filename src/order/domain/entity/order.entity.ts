@@ -23,43 +23,43 @@ export class Order {
 
   @CreateDateColumn()
   @Expose({ groups: ['group_orders'] })
-  createdAt: Date;
+  private createdAt: Date;
 
   @PrimaryGeneratedColumn()
   @Expose({ groups: ['group_orders'] })
-  id: string;
+  private id: string;
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
-  price: number;
+  private price: number;
 
   @Column()
   @Expose({ groups: ['group_orders'] })
-  customerName: string;
+  private customerName: string;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     nullable: true,
   })
   @Expose({ groups: ['group_orders'] })
-  orderItems: OrderItem[];
+  private orderItems: OrderItem[];
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
-  shippingAddress: string | null;
+  private shippingAddress: string | null;
 
-  invoiceAddress: string | null;
+  private invoiceAddress: string | null;
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
-  shippingAddressSetAt: Date | null;
+  private shippingAddressSetAt: Date | null;
 
   @Column()
   @Expose({ groups: ['group_orders'] })
-  status: OrderStatus;
+  private status: OrderStatus;
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
-  paidAt: Date | null;
+  private paidAt: Date | null;
 
   pay() {
     if (this.status !== OrderStatus.PENDING) {
@@ -71,5 +71,6 @@ export class Order {
     }
 
     this.status = OrderStatus.PAID;
+    this.paidAt = new Date();
   }
 }

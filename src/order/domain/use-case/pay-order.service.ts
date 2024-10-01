@@ -1,4 +1,4 @@
-import { BadRequestException, Inject } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { IsNotEmpty } from 'class-validator';
 import { Order } from '../entity/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,11 +19,7 @@ export default class PayOrderService {
       throw new BadRequestException('Order not found');
     }
 
-    if (order.status !== 'pending') {
-      throw new BadRequestException('Order already paid');
-    }
-
-    order.status = 'paid';
+    order.pay();
 
     return 'Order paid';
   }

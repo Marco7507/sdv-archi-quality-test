@@ -20,6 +20,8 @@ export class Order {
   static MAX_ORDER_ITEMS = 5;
   static MIN_PRICE = 5;
   static MAX_PRICE = 500;
+  static SHIPPING_COST = 5;
+  static MIN_SHIPPING_ITEMS = 3;
 
   @CreateDateColumn()
   @Expose({ groups: ['group_orders'] })
@@ -72,5 +74,39 @@ export class Order {
 
     this.status = OrderStatus.PAID;
     this.paidAt = new Date();
+  }
+
+  ship() {
+    if (this.status !== OrderStatus.PAID) {
+      throw new Error('Order not paid');
+    }
+    if (!this.shippingAddress) {
+      throw new Error('Shipping address not set');
+    }
+
+    this.status = OrderStatus.SHIPPED;
+    this.shippingAddressSetAt = new Date();
+  }
+
+  addShippingAddress(address: string) {
+    if (!address) {
+      throw new Error('Address is required');
+    }
+    if (this.status !== OrderStatus.PENDING) {
+      throw new Error('Order must be pending');
+    }
+    if (this.orderItems.length < Order.MIN_SHIPPING_ITEMS) {
+      throw new Error('Order must have at least 1 item');
+    }
+    if (!this.price) {
+      throw new Error('Order price not set');
+    }
+
+    if (!this.shippingAddress) {
+      this.price += Order.SHIPPING_COST;
+    }
+
+    this.shippingAddress = address;
+    this.shippingAddressSetAt = new Date();
   }
 }

@@ -1,14 +1,15 @@
-import { BadRequestException } from '@nestjs/common';
 import { Order } from '../entity/order.entity';
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
   IsNotEmpty,
   Min,
-  ArrayMinSize,
-  ArrayMaxSize,
   ValidateNested,
 } from 'class-validator';
 import { CreateOrderItemDto } from '../entity/order-item.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import OrderRepository from '../../infrastructure/order.repository';
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -30,20 +31,14 @@ export class CreateOrderDto {
 }
 
 export default class CreateOrderService {
-  createOrder(createOrderDto: CreateOrderDto): string {
-    const total = this.calculateTotalPrice(createOrderDto.orderItems);
+  @InjectRepository(Order)
+  private readonly orderRepository: OrderRepository;
 
-    if (total < Order.MIN_PRICE) {
-      throw new BadRequestException('Order price is too low');
-    }
+  async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
+    const order = new Order(createOrderDto);
 
-    return 'Order created';
-  }
+    await this.orderRepository.save(order);
 
-  calculateTotalPrice(orderItems) {
-    return orderItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0,
-    );
+    return order;
   }
 }

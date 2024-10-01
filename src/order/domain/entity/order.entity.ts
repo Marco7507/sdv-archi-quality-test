@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Expose } from 'class-transformer';
 import { CreateOrderDto } from '../use-case/create-order.service';
+import { BadRequestException } from '@nestjs/common';
 
 enum OrderStatus {
   PENDING = 'pending',
@@ -76,12 +77,26 @@ export class Order {
     ) {
       throw new Error('Invalid order');
     }
+
+    const total = this.calculateTotalPrice(createOrderDto.orderItems);
+
+    if (total < Order.MIN_PRICE) {
+      throw new BadRequestException('Order price is too low');
+    }
+
     this.customerName = createOrderDto.customerName;
     this.orderItems = createOrderDto.orderItems.map(
       (orderItemDto) => new OrderItem(orderItemDto),
     );
     this.price = createOrderDto.price;
     this.status = OrderStatus.PENDING;
+  }
+
+  private calculateTotalPrice(orderItems) {
+    return orderItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
   }
 
   pay() {

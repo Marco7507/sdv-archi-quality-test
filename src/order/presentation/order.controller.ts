@@ -11,6 +11,7 @@ import ShipOrderService, {
 import AddShippingAddressOrderService, {
   AddShippingAddressDto,
 } from '../domain/use-case/add-shipping-address-order.service';
+import { Order } from '../domain/entity/order.entity';
 
 @Controller('/orders')
 export default class OrderController {
@@ -20,12 +21,10 @@ export default class OrderController {
   }
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto): string {
+  async create(@Body() createOrderDto: CreateOrderDto): Promise<Order> {
     const createOrderService = new CreateOrderService();
 
-    createOrderService.createOrder(createOrderDto);
-
-    return 'Order created';
+    return await createOrderService.createOrder(createOrderDto);
   }
 
   @Post('/pay')

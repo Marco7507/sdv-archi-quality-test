@@ -1,7 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from '../entity/order.entity';
-import OrderRepository from '../../infrastructure/order.repository';
+import { OrderRepositoryInterface } from '../port/order.repository.interface';
 
 export class AddInvoiceAddressDto {
   @IsNotEmpty()
@@ -13,7 +13,7 @@ export class AddInvoiceAddressDto {
 
 export default class AddInvoiceAddressOrderService {
   @InjectRepository(Order)
-  private readonly orderRepository: OrderRepository;
+  private readonly orderRepository: OrderRepositoryInterface;
 
   async addInvoiceAddressOrder(addShippingAddressDto: AddInvoiceAddressDto) {
     const order = await this.orderRepository.findById(

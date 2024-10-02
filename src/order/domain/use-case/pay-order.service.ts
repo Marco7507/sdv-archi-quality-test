@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { IsNotEmpty } from 'class-validator';
 import { Order } from '../entity/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import OrderRepository from 'src/order/infrastructure/order.repository';
+import { OrderRepositoryInterface } from '../port/order.repository.interface';
 
 export class PayOrderDto {
   @IsNotEmpty()
@@ -11,7 +11,7 @@ export class PayOrderDto {
 
 export default class PayOrderService {
   @InjectRepository(Order)
-  private readonly orderRepository: OrderRepository;
+  private readonly orderRepository: OrderRepositoryInterface;
 
   async payOrder(payOrderDto: PayOrderDto): Promise<string> {
     const order = await this.orderRepository.findById(payOrderDto.orderId);

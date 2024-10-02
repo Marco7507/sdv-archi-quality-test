@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { CreateOrderItemDto } from '../entity/order-item.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import OrderRepository from '../../infrastructure/order.repository';
+import { OrderRepositoryInterface } from '../port/order.repository.interface';
 
 export class CreateOrderDto {
   @IsNotEmpty()
@@ -32,7 +32,7 @@ export class CreateOrderDto {
 
 export default class CreateOrderService {
   @InjectRepository(Order)
-  private readonly orderRepository: OrderRepository;
+  private readonly orderRepository: OrderRepositoryInterface;
 
   async createOrder(createOrderDto: CreateOrderDto): Promise<Order> {
     const order = new Order(createOrderDto);

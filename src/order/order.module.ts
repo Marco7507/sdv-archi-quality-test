@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import OrderRepository from './infrastructure/order.repository';
+import OrderRepositoryTypeOrm from './infrastructure/orderRepositoryTypeOrm';
 import OrderController from './presentation/order.controller';
 import { Order } from './domain/entity/order.entity';
 import { OrderItem } from './domain/entity/order-item.entity';
@@ -11,7 +11,7 @@ import { OrderItem } from './domain/entity/order-item.entity';
   providers: [
     {
       provide: 'OrderRepositoryInterface',
-      useClass: OrderRepository,
+      useClass: OrderRepositoryTypeOrm,
     },
   ],
 })
